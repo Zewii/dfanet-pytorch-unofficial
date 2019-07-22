@@ -1,0 +1,212 @@
+[
+  {
+    "hasInstances": false,
+    "category": "void",
+    "catid": 0,
+    "name": "unlabeled",
+    "ignoreInEval": true,
+    "id": 0,
+    "color": [
+      0,
+      0,
+      0
+    ],
+    "trainId": 255
+  },
+  {
+    "hasInstances": false,
+    "category": "flat",
+    "catid": 1,
+    "name": "road",
+    "ignoreInEval": false,
+    "id": 0,
+    "color": [
+      128,
+      64,
+      128
+    ],
+    "trainId": 0
+  },
+  {
+    "hasInstances": false,
+    "category": "flat",
+    "catid": 1,
+    "name": "sidewalk",
+    "ignoreInEval": false,
+    "id": 1,
+    "color": [
+      244,
+      35,
+      232
+    ],
+    "trainId": 1
+  },
+  {
+    "hasInstances": false,
+    "category": "construction",
+    "catid": 2,
+    "name": "building",
+    "ignoreInEval": false,
+    "id": 2,
+    "color": [
+      70,
+      70,
+      70
+    ],
+    "trainId": 2
+  },
+  {
+    "hasInstances": false,
+    "category": "construction",
+    "catid": 2,
+    "name": "fence",
+    "ignoreInEval": false,
+    "id": 3,
+    "color": [
+      190,
+      153,
+      153
+    ],
+    "trainId": 3
+  },
+  {
+    "hasInstances": false,
+    "category": "object",
+    "catid": 3,
+    "name": "pole",
+    "ignoreInEval": false,
+    "id": 4,
+    "color": [
+      153,
+      153,
+      153
+    ],
+    "trainId": 4
+  },
+  {
+    "hasInstances": false,
+    "category": "object",
+    "catid": 3,
+    "name": "traffic sign",
+    "ignoreInEval": false,
+    "id": 5,
+    "color": [
+      220,
+      220,
+      0
+    ],
+    "trainId": 5
+  },
+  {
+    "hasInstances": false,
+    "category": "nature",
+    "catid": 4,
+    "name": "vegetation",
+    "ignoreInEval": false,
+    "id": 6,
+    "color": [
+      107,
+      142,
+      35
+    ],
+    "trainId": 6
+  },
+  {
+    "hasInstances": false,
+    "category": "nature",
+    "catid": 4,
+    "name": "terrain",
+    "ignoreInEval": false,
+    "id": 7,
+    "color": [
+      152,
+      251,
+      152
+    ],
+    "trainId": 7
+  },
+  {
+    "hasInstances": false,
+    "category": "sky",
+    "catid": 5,
+    "name": "sky",
+    "ignoreInEval": false,
+    "id": 8,
+    "color": [
+      70,
+      130,
+      180
+    ],
+    "trainId": 8
+  },
+  {
+    "hasInstances": true,
+    "category": "human",
+    "catid": 6,
+    "name": "person",
+    "ignoreInEval": false,
+    "id": 9,
+    "color": [
+      220,
+      20,
+      60
+    ],
+    "trainId": 9
+  },
+  {
+    "hasInstances": true,
+    "category": "vehicle",
+    "catid": 7,
+    "name": "car",
+    "ignoreInEval": false,
+    "id": 10,
+    "color": [
+      0,
+      0,
+      142
+    ],
+    "trainId": 10
+  },
+  {
+    "hasInstances": true,
+    "category": "vehicle",
+    "catid": 7,
+    "name": "truck",
+    "ignoreInEval": false,
+    "id": 11,
+    "color": [
+      0,
+      0,
+      70
+    ],
+    "trainId": 11
+  },
+  {
+    "hasInstances": true,
+    "category": "vehicle",
+    "catid": 7,
+    "name": "bicycle",
+    "ignoreInEval": false,
+    "id": 12,
+    "color": [
+      119,
+      11,
+      32
+    ],
+    "trainId": 12
+  },
+  {
+    "hasInstances": false,
+    "category": "vehicle",
+    "catid": 7,
+    "name": "license plate",
+    "ignoreInEval": true,
+    "id": -1,
+    "color": [
+      0,
+      0,
+      142
+    ],
+    "trainId": -1
+  }
+]
