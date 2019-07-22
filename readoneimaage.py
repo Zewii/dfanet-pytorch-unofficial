@@ -29,7 +29,7 @@ def MscEval(cfg, net, im):
 
 
 def read_one_image(image):
-    cfg = config_factory['resnet_frdc']
+    cfg = config_factory['resnet_mydataset']
     net = DFANet(cfg.n_classes,False)
     save_pth = osp.join(cfg.respth, 'model_final.pth')
     net.load_state_dict(torch.load(save_pth))

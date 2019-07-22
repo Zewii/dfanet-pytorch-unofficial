@@ -19,7 +19,7 @@ class Loader(Dataset):
         self.mode = mode
         self.cfg = cfg
 
-        with open('./json/frdc_info.json', 'r') as fr:
+        with open('./json/mydataset_info.json', 'r') as fr:
             labels_info = json.load(fr)
         self.lb_map = {el['id']: el['trainId'] for el in labels_info}
 
@@ -98,15 +98,4 @@ class Loader(Dataset):
 
 
 if __name__ == "__main__":
-    from torch.utils.data import DataLoader
-    ds = Loader(config_factory['resnet_custom'], mode='train')
-    dl = DataLoader(ds,
-                    batch_size = 4,
-                    shuffle = True,
-                    num_workers = 4,
-                    drop_last = True)
-    for imgs, label in dl:
-        print(len(imgs))
-        for el in imgs:
-            print(el.size())
-        break
+

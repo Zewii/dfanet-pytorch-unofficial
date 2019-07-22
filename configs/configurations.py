@@ -50,7 +50,7 @@ class Config2(object):
         self.aspp_global_feature = False
         ## dataset
         self.n_classes = 13
-        self.datapth = './data/frdc/'
+        self.datapth = './data/mydataset/'
         self.n_workers = 4
         self.crop_size = (768, 768)
         self.mean = (0.485, 0.456, 0.406)
@@ -73,7 +73,7 @@ class Config2(object):
         self.ims_per_gpu = 8
         self.msg_iter = 100
         self.ohem_thresh = 0.7
-        self.respth = './res/frdc'
+        self.respth = './res/mydataset'
         self.port = 32168
         ## eval control
         self.eval_batchsize = 1

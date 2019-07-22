@@ -1,8 +1,6 @@
 import torch
 from torch import nn
-
-__all__ = ["DFANet"]
-
+import time
 class dsc_with_bn(nn.Module):
     def __init__(self, in_channels, out_channels, ksize=1, stride=1, padding=0, dilation=1, bias=True):
         super(dsc_with_bn, self).__init__()
@@ -96,7 +94,7 @@ class XceptionAx3(nn.Module):
         out_enc31 = self.e31(out_enc21)
         out_enc41 = self.e41(out_enc31)
         out_fca1 = self.fc1(out_enc41)
-        up1 = nn.functional.interpolate(out_fca1,scale_factor=(4,4), mode='bilinear',align_corners=True)
+        up1 = nn.functional.interpolate(out_fca1,scale_factor=(4,4), mode='bilinear',align_corners=False)
         # --------------------------------------------------------------------------------------
         x2 = torch.cat((out_enc21,up1), dim=1)
         out_enc22 = self.e22(x2)
@@ -105,7 +103,7 @@ class XceptionAx3(nn.Module):
         x2 = torch.cat((out_enc41,out_enc32), dim=1)
         out_enc42 = self.e42(x2)
         out_fca2 = self.fc2(out_enc42)
-        up2 = nn.functional.interpolate(out_fca2, scale_factor=(4,4), mode='bilinear',align_corners=True)
+        up2 = nn.functional.interpolate(out_fca2, scale_factor=(4,4), mode='bilinear',align_corners=False)
         # --------------------------------------------------------------------------------------
         x3 = torch.cat((out_enc22,up2),dim=1)
         out_enc23 = self.e23(x3)
@@ -114,35 +112,35 @@ class XceptionAx3(nn.Module):
         x3 = torch.cat((out_enc42,out_enc33),dim=1)
         out_enc43 = self.e43(x3)
         out_fca3 = self.fc3(out_enc43)
-        return (out_enc21, out_enc22, out_enc23, out_fca1, out_fca2, out_fca3)
+        return out_enc21, out_enc22, out_enc23, out_fca1, out_fca2, out_fca3
 
 class decoder(nn.Module):
     def __init__(self, num_classes=19, bias=True, dropout_prob=0):
         super(decoder, self).__init__()
-        self.convt1 = nn.Sequential(nn.Conv2d(48, 32, kernel_size=1, stride=1, padding=0, bias=bias, dilation=1),nn.BatchNorm2d(32))
-        self.convt2 = nn.Sequential(nn.Conv2d(48, 32, kernel_size=1, stride=1, padding=0, bias=bias, dilation=1),nn.BatchNorm2d(32))
-        self.convt3 = nn.Sequential(nn.Conv2d(48, 32, kernel_size=1, stride=1, padding=0, bias=bias, dilation=1),nn.BatchNorm2d(32))
-        self.convt4 = nn.Sequential(nn.Conv2d(192, 32, kernel_size=1, stride=1, padding=0, bias=bias, dilation=1),nn.BatchNorm2d(32))
-        self.convt5 = nn.Sequential(nn.Conv2d(192, 32, kernel_size=1, stride=1, padding=0, bias=bias, dilation=1),nn.BatchNorm2d(32))
-        self.convt6 = nn.Sequential(nn.Conv2d(192, 32, kernel_size=1, stride=1, padding=0, bias=bias, dilation=1),nn.BatchNorm2d(32))
+        self.convt1 = nn.Sequential(nn.ConvTranspose2d(48, num_classes, kernel_size=3, stride=1, padding=1, output_padding=0, bias=bias, dilation=1),nn.BatchNorm2d(num_classes))
+        self.convt2 = nn.Sequential(nn.ConvTranspose2d(48, num_classes, kernel_size=3, stride=2, padding=1, output_padding=1, bias=bias, dilation=1),nn.BatchNorm2d(num_classes))
+        self.convt3 = nn.Sequential(nn.ConvTranspose2d(48, 48, kernel_size=3, stride=2, padding=1, output_padding=1, bias=bias, dilation=1),
+                     nn.ConvTranspose2d(48, num_classes, kernel_size=3, stride=2, padding=1, output_padding=1, bias=bias, dilation=1),nn.BatchNorm2d(num_classes))
+        self.convt4 = nn.Sequential(nn.ConvTranspose2d(192, 48, kernel_size=3, stride=2, padding=1, output_padding=1, bias=bias, dilation=1),
+                     nn.ConvTranspose2d(48, num_classes, kernel_size=3, stride=2, padding=1, output_padding=1, bias=bias, dilation=1),nn.BatchNorm2d(num_classes))
+        self.convt5 = nn.Sequential(nn.ConvTranspose2d(192, 48, kernel_size=3, stride=2, padding=1, output_padding=1, bias=bias, dilation=1),
+                     nn.ConvTranspose2d(48, num_classes, kernel_size=3, stride=2, padding=1, output_padding=1, bias=bias, dilation=1),nn.BatchNorm2d(num_classes))
+        self.convt6 = nn.Sequential(nn.ConvTranspose2d(192, 48, kernel_size=3, stride=2, padding=1, output_padding=1, bias=bias, dilation=1),
+                     nn.ConvTranspose2d(48, num_classes, kernel_size=3, stride=2, padding=1, output_padding=1, bias=bias, dilation=1),nn.BatchNorm2d(num_classes))
         self.act = nn.ReLU()
-        self.conv1 = nn.Sequential(nn.Conv2d(32,32,kernel_size=1,stride=1,padding=0,bias=bias),nn.BatchNorm2d(32),nn.ReLU())
-        self.conv2 = nn.Conv2d(32,num_classes,kernel_size=1,stride=1,padding=0,bias=bias)
+        self.conv = nn.Sequential(nn.Conv2d(num_classes,num_classes,kernel_size=1,stride=1,padding=0,bias=bias),nn.BatchNorm2d(num_classes),nn.ReLU())
     def forward(self,x):
         x1 = self.convt1(x[0])
         x2 = self.convt2(x[1])
-        x2 = nn.functional.interpolate(x2,scale_factor=(2, 2), mode='bilinear',align_corners=True)
         x3 = self.convt3(x[2])
-        x3 = nn.functional.interpolate(x3,scale_factor=(4, 4), mode='bilinear',align_corners=True)
         x4 = self.convt4(x[3])
-        x4 = nn.functional.interpolate(x4,scale_factor=(4, 4), mode='bilinear',align_corners=True)
         x5 = self.convt5(x[4])
-        x5 = nn.functional.interpolate(x5,scale_factor=(8, 8), mode='bilinear',align_corners=True)
+        x5 = nn.functional.interpolate(x5, scale_factor=(2,2), mode='bilinear', align_corners=False)
         x6 = self.convt6(x[5])
-        x6 = nn.functional.interpolate(x6, scale_factor=(16,16), mode='bilinear', align_corners=True)
-        out = self.conv1(self.act(x1+x2+x3))
-        out = self.conv2(self.act(out+x4+x5+x6))
-        out = nn.functional.interpolate(out, scale_factor=(4,4),mode='bilinear',align_corners=True)
+        x6 = nn.functional.interpolate(x6, scale_factor=(4,4), mode='bilinear', align_corners=False)
+        out = self.conv(self.act(x1+x2+x3))
+        out = self.act(out+x4+x5+x6)
+        out = nn.functional.interpolate(out, scale_factor=(4,4),mode='bilinear',align_corners=False)
         return out
 
 class DFANet(nn.Module):
@@ -156,11 +154,21 @@ class DFANet(nn.Module):
         return out
 
 if __name__=='__main__':
-    net = DFANet(13,False)
-    net.cuda()
-    net.eval()
-    example = torch.rand(1,3,512,512).cuda()
-    res = net(example)
-    print(res.shape)
+    '''
+    b1 = block2(8,bias=False)
+    b2 = block2(48, bias=False)
+    e1 = enc2(144, False)
+    for name, child in e1.named_children():
+        print("==",name)
+        for name, cchild in child.named_children():
+            print("====", name)
+            for name, ccchild in cchild.named_children():
+                print('======', name)
+                for name, cccchild in ccchild.named_children():
+                    print('========', name)
+                    for name, ccx in cccchild.named_parameters():
+                        print(name)
+                        print(ccx.shape)
+    '''
 
         

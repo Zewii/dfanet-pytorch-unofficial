@@ -67,7 +67,7 @@ class MscEval(object):
 
 def evaluate():
     ## setup
-    cfg = config_factory['resnet_frdc']
+    cfg = config_factory['resnet_mydataset']
     setup_logger(cfg.respth)
     FORMAT = '%(levelname)s %(filename)s(%(lineno)d): %(message)s'
     log_level = logging.INFO
